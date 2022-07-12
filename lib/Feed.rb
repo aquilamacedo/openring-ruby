@@ -78,33 +78,42 @@ end
 class Rss < Feed
   def process_title(rss_content)
     rss_title = rss_content.channel.title
-    puts "Title: #{rss_title}"
+
+    return rss_title
   end
 
   def process_link(rss_content)
     rss_link = rss_content.channel.link
-    puts "Link: #{rss_link}"
+
+    return rss_link
   end
 
   def process_post_content(rss_content)
     rss_content = rss_content.items[0].description
     rss_content_beauty = Nokogiri::HTML(rss_content).text
     rss_content_beauty_limit = rss_content_beauty[0..256] + "…"
-    puts rss_content_beauty_limit
+
+    return rss_content_beauty_limit
   end
 
   def process_post_date(rss_content)
     rss_pub_date = rss_content.items[0].date
-    puts "Date: #{rss_pub_date}"
+
+    rss_format = Date.parse(rss_pub_date.to_s)
+    rss_format = rss_format.strftime('%b %d, %Y')
+
+    return rss_format
   end
 
   def process_post_title(rss_content)
     rss_post_title = rss_content.items[0].title
-    puts "Post Title: #{rss_post_title}"
+
+    return rss_post_title
   end
 
   def process_post_link(rss_content)
     rss_post_link = rss_content.items[0].link
-    puts "Post Link: #{rss_post_link}"
+
+    return rss_post_link
   end
 end
