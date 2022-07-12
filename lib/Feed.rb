@@ -1,5 +1,7 @@
 require 'rss'
 require 'nokogiri'
+require 'erb'
+require 'date'
 
 class Feed
   def process_title(url)
@@ -28,15 +30,18 @@ class Feed
 end
 
 class Atom < Feed
-  def process_title(url)
-    atom_title = rss_content.title.content
-    puts "Title: #{atom_title}"
+  def process_title(rss_content)
+    atom_title = rss_content.title.content 
+
+    return atom_title
   end
 
   def process_link(rss_content)
-    # TODO
     atom_link = rss_content.link.href
-    puts "Link: #{atom_link}"
+    atom_uri_link = URI(atom_link)
+    atom_base_url = "#{atom_uri_link.scheme}://#{atom_uri_link.host}"
+
+    return atom_base_url
   end
 
   def process_post_content(rss_content)
@@ -45,23 +50,28 @@ class Atom < Feed
     atom_content_beauty = atom_content_parser.css('p')[0].text
     atom_content_beauty_limit = atom_content_beauty[0..256] + "…"
 
-    puts atom_content_beauty_limit
+    return atom_content_beauty_limit
   end
 
   def process_post_date(rss_content)
-    # Handle the format of data
     atom_pub_date = rss_content.items[0].published.content
-    puts "Date: #{atom_pub_date}"
+
+    atom_format = Date.parse(atom_pub_date.to_s)
+    atom_format = atom_format.strftime('%b %d, %Y')
+
+    return atom_format
   end
 
   def process_post_title(rss_content)
     atom_post_title = rss_content.items[0].title.content
-    puts "Post Title: #{atom_post_title}"
+
+    return atom_post_title
   end
 
   def process_post_link(rss_content)
     atom_post_link = rss_content.items[0].link.href
-    puts "Post Link: #{atom_post_link}"
+
+    return atom_post_link
   end
 end
 
@@ -97,30 +107,4 @@ class Rss < Feed
     rss_post_link = rss_content.items[0].link
     puts "Post Link: #{rss_post_link}"
   end
-end
-
-
-#rss = RSS::Parser.parse('/home/aqu1la/Documents/Repositorios/openring-ruby/lib/feed.xml')
-rss = RSS::Parser.parse('https://drewdevault.com/blog/index.xml')
-
-puts rss.feed_type
-
-if rss.feed_type == 'atom'
-  a = Atom.new
-
-  a_atom = a.process_title(rss)
-  b_atom = a.process_link(rss)
-  c_atom = a.process_post_content(rss)
-  d_atom = a.process_post_date(rss)
-  e_atom = a.process_post_title(rss)
-  f_atom = a.process_post_link(rss)
-else
-  b = Rss.new
-
-  a_rss = b.process_title(rss)
-  f_rss = b.process_link(rss)
-  b_rss = b.process_post_content(rss)
-  c_rss = b.process_post_date(rss)
-  d_rss = b.process_post_title(rss)
-  e_rss = b.process_post_link(rss)
 end

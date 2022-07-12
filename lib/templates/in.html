@@ -1,0 +1,44 @@
+<section class="webring"> <section class="articles">
+    <% (0..2).each do |value| %>
+    <div class="article">
+        <h4 class="title">
+          <a href="<%= process_post_link[value] %>" target="_blank" rel="noopener"><%= process_post_title[value] %></a>
+        </h4>
+        <p class="summary"><%= process_post_content[value] %></p>
+        <small class="source">
+          via <a href="<%= process_link[value] %>"><%= process_title[value] %></a>
+        </small>
+        <small class="date"><%= process_post_date[value] %></small>
+    </div>
+    <% end %>
+
+</section></section>
+  
+<style>
+.webring .articles {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -0.5rem;
+}
+.webring .title {
+  margin: 0;
+}
+.webring .article {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  background: #eee;
+  min-width: 10rem;
+}
+.webring .summary {
+  font-size: 0.8rem;
+  flex: 1 1 0;
+}
+.webring .attribution {
+  text-align: right;
+  font-size: 0.8rem;
+  color: #555;
+}
+</style>
